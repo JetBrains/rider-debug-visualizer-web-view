@@ -1,0 +1,29 @@
+@import "~@hediet/visualization-bundle/style.scss";
+
+body {
+	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+	background-color: transparent;
+	margin: 0px;
+	padding: 0px;
+	//border: 0px;
+
+	margin: 0;
+	padding: 0;
+	//padding-bottom: 1px;
+}
+
+html,
+body,
+.root,
+.component-MainView {
+	height: 100%;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+@import "./vscode-dark.scss";
+@import "./vscode-light.scss";
+
+.visualization {
+	background: transparent;
+}

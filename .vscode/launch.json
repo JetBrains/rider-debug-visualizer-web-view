@@ -1,0 +1,12 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			// You can debug a JCEF pane in Rider (https://jetbrains.org/intellij/sdk/docs/reference_guide/jcef.html#debugging)
+			"type": "pwa-chrome",
+			"request": "attach",
+			"name": "Attach",
+			"port": 9222
+		}
+	]
+}
