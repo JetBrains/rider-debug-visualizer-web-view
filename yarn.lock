@@ -281,10 +281,10 @@
     mobx "^5.10.0"
     sinon "^7.2.7"
 
-"@hediet/visualization-bundle@^0.1.0":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@hediet/visualization-bundle/-/visualization-bundle-0.1.1.tgz#dc36d772def977cb97292890afb3b369760c620b"
-  integrity sha512-X0Y0MQQHpZkMDSM9naLC5F3LVlSq+nQ6dNYkNz+3sF6PdvSf6xxUbRL4qbum2QCLqNRoiEu/HO6fjCU/gBvysA==
+"@hediet/visualization-bundle@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@hediet/visualization-bundle/-/visualization-bundle-0.1.2.tgz#22e51d13aab5c348c034b3fa0fd77776db8036d1"
+  integrity sha512-Fm9o9lRrce2SeK1/Y2cizs5hwJxjDeQEzmu1YToUHadD2JUUAVCXFwHzopdHVONkFDd749m9aO3biPPEEx63jA==
   dependencies:
     "@finos/perspective-viewer" "^0.5.2"
     "@finos/perspective-viewer-d3fc" "^0.5.2"
