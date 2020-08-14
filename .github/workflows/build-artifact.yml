@@ -17,7 +17,7 @@ jobs:
               with:
                   node-version: 10.x
             - run: yarn install --frozen-lockfile
-            - run: yarn run-script build
+            - run: yarn run build
             - name: Upload build artifact
               uses: actions/upload-artifact@v2
               with:
