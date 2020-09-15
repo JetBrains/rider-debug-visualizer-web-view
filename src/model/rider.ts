@@ -1,6 +1,5 @@
 import { EventEmitter } from "@hediet/std/events";
-import { ExtractedData } from "../../../vscode-debug-visualizer/node_modules/@hediet/debug-visualizer-data-extraction/dist";
-import { VisualizationId } from "@hediet/visualization-core";
+import { VisualizationId, VisualizationData } from "@hediet/visualization-core";
 
 export class Rider {
 	private readonly onMessageEmitter = new EventEmitter<{
@@ -52,34 +51,35 @@ interface ExtendedWindow {
 	sendMessageToRider: ((message: string) => void) | undefined;
 }
 
-type OutgoingMessage = { kind: "initialized" } | VisualizationResult;
-
-export interface VisualizationResult {
-	kind: "visualizationResult";
-	usedVisualizationId: VisualizationId | undefined;
-	availableVisualizations: VisualizationInfo[];
-}
+type OutgoingMessage =
+	| {
+			kind: "getAvailableVisualizationsResponse";
+			requestId: string;
+			availableVisualizations: VisualizationInfo[];
+	  }
+	| { kind: "response"; requestId: string }
+	| { kind: "initialized" };
 
 interface VisualizationInfo {
 	id: VisualizationId;
 	name: string;
 	priority: number;
+	visualizationHandle: string;
 }
 
-type IncomingMessage = {
-	kind: "updateState";
-	state: VisualizationState;
-};
-
-type VisualizationData = ExtractedData;
-
-export type VisualizationState =
+type IncomingMessage =
 	| {
-			kind: "visualization";
+			kind: "getAvailableVisualizations";
 			data: VisualizationData;
-			preferredVisualizationId?: VisualizationId;
+			requestId: string;
 	  }
 	| {
-			kind: "text";
+			kind: "showVisualization";
+			visualizationHandle: string;
+			requestId: string;
+	  }
+	| {
+			kind: "showText";
 			text: string;
+			requestId: string;
 	  };

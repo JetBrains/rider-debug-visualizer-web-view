@@ -10,9 +10,8 @@ import { VisualizationView, Theme } from "@hediet/visualization-core";
 @observer
 export class MainView extends React.Component<{ model: Model }, {}> {
 	render() {
-		const model = this.props.model;
-		const vis = model.stateWithVisualizations.bestVisualization;
-		const overlay = model.stateWithVisualizations.overlay;
+		const { model } = this.props;
+		const { visualization, overlayText } = model;
 
 		return (
 			<div className="component-MainView" style={{}}>
@@ -31,15 +30,15 @@ export class MainView extends React.Component<{ model: Model }, {}> {
 							height: "100%",
 						}}
 					>
-						{vis && (
+						{visualization && (
 							<VisualizationView
-								visualization={vis}
+								visualization={visualization}
 								theme={Theme.dark}
 							/>
 						)}
 					</div>
 					{/* It is important to not unmount the visualization when showing a timeout error message */}
-					{overlay && (
+					{overlayText !== undefined && (
 						<div
 							style={{
 								position: "absolute",
@@ -58,7 +57,7 @@ export class MainView extends React.Component<{ model: Model }, {}> {
 										padding: 10,
 									}}
 								>
-									{overlay.text}
+									{overlayText}
 								</div>
 							</CenteredContent>
 						</div>

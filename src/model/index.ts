@@ -1,5 +1,5 @@
-import { observable, computed, autorun } from "mobx";
-import { Rider, VisualizationState, VisualizationResult } from "./rider";
+import { observable, computed, autorun, runInAction } from "mobx";
+import { Rider } from "./rider";
 import {
 	Visualization,
 	globalVisualizationFactory,
@@ -8,74 +8,78 @@ import {
 } from "@hediet/visualization-core";
 import "@hediet/visualization-bundle";
 
+export type VisualizationState =
+	| {
+			kind: "loading";
+	  }
+	| {
+			kind: "visualization";
+			visualization: Visualization;
+	  }
+	| {
+			kind: "text";
+			text: string;
+	  };
+
 export class Model {
 	@observable log = new Array<string>();
 
 	private readonly api = new Rider();
 
-	@observable.ref state: VisualizationState | undefined;
+	@observable.ref visualization: Visualization | undefined;
+	@observable.ref overlayText: string | undefined;
 
-	private lastVisualizations: Visualizations = {
-		bestVisualization: undefined,
-		allVisualizations: [],
-		visualizationDataErrors: [],
-	};
+	private cachedVisualizations = new Map<
+		/* visualizationHandle */ string,
+		Visualization
+	>();
 
-	@computed get stateWithVisualizations(): {
-		bestVisualization: Visualization | undefined;
-		allVisualizations: Visualization[];
-		overlay: { text: string } | undefined;
-	} {
-		if (!this.state) {
-			return { ...this.lastVisualizations, overlay: { text: "loading" } };
-		}
-
-		switch (this.state.kind) {
-			case "text": {
-				return {
-					...this.lastVisualizations,
-					overlay: { text: this.state.text },
-				};
-			}
-			case "visualization": {
-				const vis = globalVisualizationFactory.getVisualizations(
-					this.state.data,
-					this.state.preferredVisualizationId
-				);
-				this.lastVisualizations = vis;
-				return { ...vis, overlay: undefined };
-			}
-		}
-	}
-
-	@computed get allVisualizations(): Visualization[] {
-		return this.stateWithVisualizations.allVisualizations;
-	}
-
-	@computed get usedVisualizationId(): VisualizationId | undefined {
-		if (this.stateWithVisualizations.bestVisualization) {
-			return this.stateWithVisualizations.bestVisualization.id;
-		}
-		return undefined;
-	}
+	private visualizationIdx = 0;
 
 	constructor() {
 		this.api.onMessage.sub(({ message }) => {
-			if (message.kind === "updateState") {
-				this.state = message.state;
-			}
-		});
-		autorun(() => {
-			this.api.sendMessage({
-				kind: "visualizationResult",
-				availableVisualizations: this.allVisualizations.map((v) => ({
-					id: v.id,
-					name: v.name,
-					priority: v.priority,
-				})),
-				usedVisualizationId: this.usedVisualizationId,
+			runInAction(() => {
+				if (message.kind === "showText") {
+					this.overlayText = message.text;
+				} else if (message.kind === "showVisualization") {
+					const visualization = this.cachedVisualizations.get(
+						message.visualizationHandle
+					);
+					this.overlayText = undefined;
+					this.visualization = visualization;
+					// TODO error handling
+					this.api.sendMessage({
+						kind: "response",
+						requestId: message.requestId,
+					});
+				} else if (message.kind === "getAvailableVisualizations") {
+					this.cachedVisualizations;
+					const visualizations = globalVisualizationFactory.getVisualizations(
+						message.data,
+						undefined
+					).allVisualizations;
+					this.cachedVisualizations = new Map(
+						visualizations.map((v) => [
+							`vis-${this.visualizationIdx++}`,
+							v,
+						])
+					);
+					this.api.sendMessage({
+						kind: "getAvailableVisualizationsResponse",
+						requestId: message.requestId,
+						availableVisualizations: [
+							...this.cachedVisualizations.entries(),
+						].map(([visualizationHandle, vis]) => ({
+							id: vis.id,
+							name: vis.name,
+							priority: vis.priority,
+							visualizationHandle,
+						})),
+					});
+				}
 			});
 		});
+
 		this.api.sendMessage({
 			kind: "initialized",
 		});
