@@ -1,4 +1,5 @@
 {
 	"tasksStatusbar.taskLabelFilter": "^dev$",
-	"npm.packageManager": "yarn"
+	"npm.packageManager": "yarn",
+	"editor.formatOnSave": true
 }
