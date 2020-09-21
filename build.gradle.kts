@@ -37,6 +37,8 @@ publishing {
         create<MavenPublication>("maven") {
             groupId = "org.jetbrains.rider"
             artifactId = "rider-debug-visualizer-web-view"
+
+            from(components["java"])
         }
     }
     repositories {
