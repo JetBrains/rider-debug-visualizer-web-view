@@ -16,8 +16,8 @@ jobs:
               uses: actions/setup-node@v1
               with:
                   node-version: 10.x
-            - run: ./gradlew jar -Pversion=1.0.${{ github.run_id }}
+            - run: ./gradlew publish -Pversion=1.0.${{ github.run_id }}
             - name: Upload build artifact
               uses: actions/upload-artifact@v2
               with:
-                  path: "build/libs/*.jar"
+                  path: "build/repo/**/*"

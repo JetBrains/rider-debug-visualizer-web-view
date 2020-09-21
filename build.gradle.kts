@@ -2,6 +2,7 @@ plugins {
     id("com.gradle.plugin-publish") version "0.10.1"
     id("me.filippov.gradle.jvm.wrapper") version("0.9.2")
     kotlin("jvm") version "1.4.10"
+    `maven-publish`
 }
 
 repositories {
@@ -28,5 +29,19 @@ tasks.jar {
     from("dist") {
         include("**/*")
         exclude("**/*.map")
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "org.jetbrains.rider"
+            artifactId = "rider-debug-visualizer-web-view"
+        }
+    }
+    repositories {
+        maven {
+            url = uri("$buildDir/repo")
+        }
     }
 }
