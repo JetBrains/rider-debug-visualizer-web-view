@@ -16,12 +16,9 @@ jobs:
               uses: actions/setup-node@v1
               with:
                   node-version: 10.x
-            - run: yarn install --frozen-lockfile
-            - run: yarn run build
+            - run: gradlew jar -Pversion=1.0.${{ github.run_id }}
             - name: Upload build artifact
               uses: actions/upload-artifact@v2
               with:
-                  name: dist
-                  path: |
-                      dist
-                      !dist/**/*.map
+                  name: build/libs
+                  path: *.jar
