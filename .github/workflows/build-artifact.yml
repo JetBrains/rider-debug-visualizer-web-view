@@ -9,8 +9,6 @@ on:
 jobs:
     build:
         runs-on: ubuntu-latest
-        env:
-            VERSION_PATTERN: 1.0
         steps:
             - name: Checkout
               uses: actions/checkout@v2
@@ -18,8 +16,10 @@ jobs:
                   submodules: true
             - name: Calculate version
               run: |
-                VERSION=`[[ $GITHUB_REF == refs/tags/* ]] && echo $GITHUB_REF | cut -d / -f 3 || echo $VERSION_PATTERN.${{ github.run_id }}`
-                echo "Version detected: $VERSION"
+                VERSION=`[[ $GITHUB_REF == refs/tags/* ]] \
+                  && echo $GITHUB_REF | cut -d / -f 3 \
+                  || echo $(jq -r .version package.json).${{ github.run_id }}`
+                echo "Version used: $VERSION"
                 echo "::set-env name=JETBRAINS_VERSION::$VERSION"
             - name: Install Node.js
               uses: actions/setup-node@v1
