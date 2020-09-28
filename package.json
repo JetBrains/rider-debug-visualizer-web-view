@@ -3,7 +3,8 @@
 	"version": "0.1.0",
 	"scripts": {
 		"dev": "webpack-dev-server --hot",
-		"build": "webpack"
+		"build": "yarn build-webpack",
+		"build-webpack": "node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --mode production"
 	},
 	"dependencies": {
 		"@hediet/std": "0.6.0",
