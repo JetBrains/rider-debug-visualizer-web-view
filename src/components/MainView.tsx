@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Model } from "../model";
-import classnames = require("classnames");
 import { observer } from "mobx-react";
 import { hotComponent } from "../utils/hotComponent";
 import { CenteredContent } from "./NoData";
@@ -33,7 +32,7 @@ export class MainView extends React.Component<{ model: Model }, {}> {
 						{visualization && (
 							<VisualizationView
 								visualization={visualization}
-								theme={Theme.dark}
+								theme={model.theme}
 							/>
 						)}
 					</div>

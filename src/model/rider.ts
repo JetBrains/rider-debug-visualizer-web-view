@@ -82,4 +82,9 @@ type IncomingMessage =
 			kind: "showText";
 			text: string;
 			requestId: string;
+	  }
+	| {
+			kind: "setTheme";
+			theme: "light" | "dark";
+			requestId: string;
 	  };

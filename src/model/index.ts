@@ -1,10 +1,9 @@
-import { observable, computed, autorun, runInAction } from "mobx";
+import { computed, observable, runInAction } from "mobx";
 import { Rider } from "./rider";
 import {
 	Visualization,
 	globalVisualizationFactory,
-	Visualizations,
-	VisualizationId,
+	Theme,
 } from "@hediet/visualization-core";
 import "@hediet/visualization-bundle";
 
@@ -22,12 +21,20 @@ export type VisualizationState =
 	  };
 
 export class Model {
-	@observable log = new Array<string>();
-
 	private readonly api = new Rider();
 
 	@observable.ref visualization: Visualization | undefined;
-	@observable.ref overlayText: string | undefined;
+	@observable overlayText: string | undefined;
+
+	@observable themeName: "light" | "dark" = "light";
+
+	@computed get theme(): Theme {
+		if (this.themeName === "light") {
+			return Theme.light;
+		} else {
+			return Theme.dark;
+		}
+	}
 
 	private cachedVisualizations = new Map<
 		/* visualizationHandle */ string,
@@ -53,7 +60,6 @@ export class Model {
 						requestId: message.requestId,
 					});
 				} else if (message.kind === "getAvailableVisualizations") {
-					this.cachedVisualizations;
 					const visualizations = globalVisualizationFactory.getVisualizations(
 						message.data,
 						undefined
@@ -75,6 +81,12 @@ export class Model {
 							priority: vis.priority,
 							visualizationHandle,
 						})),
+					});
+				} else if (message.kind === "setTheme") {
+					this.themeName = message.theme;
+					this.api.sendMessage({
+						kind: "response",
+						requestId: message.requestId,
 					});
 				}
 			});

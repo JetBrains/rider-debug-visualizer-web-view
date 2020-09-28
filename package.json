@@ -1,6 +1,6 @@
 {
 	"name": "rider-debug-visualizer",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"scripts": {
 		"dev": "webpack-dev-server --hot",
 		"build": "webpack"
@@ -14,8 +14,8 @@
 		"react": "^16.13.1",
 		"react-dom": "^16.13.1",
 		"react-measure": "^2.3.0",
-		"@hediet/visualization-core": "^0.1.0",
-		"@hediet/visualization-bundle": "^0.1.2"
+		"@hediet/visualization-core": "^0.1.1",
+		"@hediet/visualization-bundle": "^0.1.8"
 	},
 	"devDependencies": {
 		"@types/classnames": "^2.2.10",
