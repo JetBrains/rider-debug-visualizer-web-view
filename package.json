@@ -15,8 +15,8 @@
 		"react": "^16.13.1",
 		"react-dom": "^16.13.1",
 		"react-measure": "^2.3.0",
-		"@hediet/visualization-core": "^0.1.1",
-		"@hediet/visualization-bundle": "^0.1.8"
+		"@hediet/visualization-core": "^0.2.0",
+		"@hediet/visualization-bundle": "^0.2.0"
 	},
 	"devDependencies": {
 		"@types/classnames": "^2.2.10",

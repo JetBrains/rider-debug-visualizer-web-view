@@ -6,6 +6,7 @@ import {
 	Theme,
 } from "@hediet/visualization-core";
 import "@hediet/visualization-bundle";
+import { wait } from "@hediet/std/timer";
 
 export type VisualizationState =
 	| {
@@ -43,22 +44,43 @@ export class Model {
 
 	private visualizationIdx = 0;
 
+	private visualizationGotReady = () => {};
+	public handleVisualizationGotReady() {
+		this.visualizationGotReady();
+	}
+
 	constructor() {
 		this.api.onMessage.sub(({ message }) => {
 			runInAction(() => {
 				if (message.kind === "showText") {
 					this.overlayText = message.text;
 				} else if (message.kind === "showVisualization") {
-					const visualization = this.cachedVisualizations.get(
-						message.visualizationHandle
-					);
-					this.overlayText = undefined;
-					this.visualization = visualization;
-					// TODO error handling
-					this.api.sendMessage({
-						kind: "response",
-						requestId: message.requestId,
-					});
+					(async () => {
+						await Promise.race([waitForInitialResized]);
+						const visualization = this.cachedVisualizations.get(
+							message.visualizationHandle
+						);
+
+						if (visualization) {
+							await visualization.preload();
+						}
+
+						this.overlayText = undefined;
+
+						const visualizationReadyPromise = new Promise((res) => {
+							this.visualizationGotReady = () => {
+								res();
+							};
+						});
+						this.visualization = visualization;
+
+						await visualizationReadyPromise;
+
+						this.api.sendMessage({
+							kind: "response",
+							requestId: message.requestId,
+						});
+					})();
 				} else if (message.kind === "getAvailableVisualizations") {
 					const visualizations = globalVisualizationFactory.getVisualizations(
 						message.data,
@@ -97,3 +119,10 @@ export class Model {
 		});
 	}
 }
+
+const waitForInitialResized = new Promise((res) => {
+	window.addEventListener("resize", () => {
+		console.log("resize");
+		res();
+	});
+});

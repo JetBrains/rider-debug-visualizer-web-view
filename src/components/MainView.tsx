@@ -33,6 +33,9 @@ export class MainView extends React.Component<{ model: Model }, {}> {
 							<VisualizationView
 								visualization={visualization}
 								theme={model.theme}
+								onReady={() =>
+									model.handleVisualizationGotReady()
+								}
 							/>
 						)}
 					</div>
