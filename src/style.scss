@@ -27,3 +27,11 @@ body,
 .visualization {
 	background: transparent;
 }
+
+.theme-dark {
+	--visualizer-background: #323232;
+}
+
+.theme-light {
+	--visualizer-background: white;
+}
